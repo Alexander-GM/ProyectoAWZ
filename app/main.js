@@ -3,54 +3,55 @@ const loadWelcomeTemplate = async () => {
         <style>
             body {
                 font-family: Arial, sans-serif;
-                background-color: #B4B5E0; /* Color de fondo del cuerpo */
+                background-color: #f2f2f2;
                 text-align: center;
                 padding: 20px;
-                color: #333; /* Color del texto principal */
             }
             h1 {
-                color: #FF5733; /* Color del título h1 */
+                color: #FF6347; /* Rojo coral */
             }
             p {
-                color: #666; /* Color del texto de los párrafos */
+                color: #008080; /* Azul verdoso */
             }
             table {
                 width: 80%;
                 border-collapse: collapse;
                 margin: 20px auto;
-                background-color: #fff; /* Color de fondo de la tabla */
+                background-color: rgba(255, 255, 255, 0.7); /* Fondo blanco semi-transparente */
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
-            table, th, td {
-                border: 1px solid #ddd; /* Color del borde de la tabla */
-            }
             th {
-                background-color: #f4f4f4; /* Color de fondo de las celdas de encabezado */
-                color: #333; /* Color del texto de las celdas de encabezado */
+                background-color: #00CED1; /* Azul turquesa */
+                color: #FFD700; /* Dorado */
+                padding: 12px;
+                text-align: left;
+            }
+            td {
+                border: 1px solid #ddd;
+                padding: 12px;
+                text-align: left;
             }
             tr:nth-child(even) {
-                background-color: #f9f9f9; /* Color de fondo de filas pares */
+                background-color: #FF6347; 
+                color: #FFF; 
             }
             form {
                 max-width: 500px;
                 margin: 20px auto;
-                background: #fff; /* Color de fondo del formulario */
+                background: rgba(255, 20, 147, 0.5); 
                 padding: 20px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 border-radius: 5px;
             }
-            form div {
-                margin-bottom: 15px;
-            }
             label {
                 display: block;
                 margin-bottom: 5px;
-                color: #333; /* Color del texto de las etiquetas */
+                color: #FFD700; 
             }
             input, textarea {
                 width: 100%;
                 padding: 10px;
-                border: 1px solid #ddd; /* Color del borde de los campos de entrada */
+                border: 1px solid #FFD700; 
                 border-radius: 4px;
                 box-sizing: border-box;
             }
@@ -58,39 +59,36 @@ const loadWelcomeTemplate = async () => {
                 padding: 10px 20px;
                 border: none;
                 border-radius: 4px;
-                background-color: #28a745; /* Color de fondo del botón */
-                color: #fff; /* Color del texto del botón */
+                background-color: #32CD32; 
+                color: #FFF; 
                 cursor: pointer;
                 font-size: 16px;
             }
             button:hover {
-                background-color: #218838; /* Color de fondo del botón al pasar el mouse */
-            }
-            .action-buttons button {
-                margin-right: 5px;
+                background-color: #3CB371; 
             }
             .action-buttons button.delete {
-                background-color: #dc3545; /* Color de fondo del botón de eliminar */
+                background-color: #DC143C; 
             }
             .action-buttons button.delete:hover {
-                background-color: #c82333; /* Color de fondo del botón de eliminar al pasar el mouse */
+                background-color: #B22222; 
             }
             .action-buttons button.update {
-                background-color: #007bff; /* Color de fondo del botón de actualizar */
+                background-color: #1E90FF; 
             }
             .action-buttons button.update:hover {
-                background-color: #0056b3; /* Color de fondo del botón de actualizar al pasar el mouse */
+                background-color: #4169E1; 
             }
         </style>
-        <h1>Películas!</h1>
-        <p>Esta es una página para administrar películas.</p>
+        <h1>Cartelera Ciñemex</h1>
+        <p>Administracion de peliculas en Ciñemex</p>
         <table id="movies-table">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Género</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
+                    <th>Prologo</th>
+                    <th>Administrar</th>
                 </tr>
             </thead>
             <tbody>
@@ -106,10 +104,10 @@ const loadWelcomeTemplate = async () => {
                 <input type="text" id="genre" required>
             </div>
             <div>
-                <label for="description">Descripción:</label>
+                <label for="description">Prologo:</label>
                 <textarea id="description" required></textarea>
             </div>
-            <button type="submit">Crear</button>
+            <button type="submit">Dar de Alta</button>
         </form>
     `;
     document.body.innerHTML = template;
@@ -122,14 +120,13 @@ const loadWelcomeTemplate = async () => {
     await loadMovies();
 };
 
-// Funciones para cargar películas, crear, eliminar y actualizar
 const loadMovies = async () => {
     try {
         const response = await fetch('/movies');
         const movies = await response.json();
 
         const tableBody = document.getElementById('movies-table').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = ''; // Limpiar filas existentes
+        tableBody.innerHTML = ''; // Clear existing rows
         movies.forEach(movie => {
             const row = tableBody.insertRow();
             row.insertCell(0).textContent = movie.name;
@@ -142,7 +139,7 @@ const loadMovies = async () => {
             actionsCell.appendChild(createActionButton('Actualizar', () => updateMovie(movie._id, movie.name, movie.genre, movie.description), 'update'));
         });
     } catch (error) {
-        console.error('Error al cargar películas:', error);
+        console.error('Error fetching movies:', error);
     }
 };
 
@@ -163,10 +160,10 @@ const createMovie = async () => {
             addMovieToTable(newMovie);
             document.getElementById('create-movie-form').reset();
         } else {
-            console.error('Error al crear película:', response.statusText);
+            console.error('Error creating movie:', response.statusText);
         }
     } catch (error) {
-        console.error('Error al crear película:', error);
+        console.error('Error creating movie:', error);
     }
 };
 
@@ -188,7 +185,7 @@ const deleteMovie = async (id) => {
         await fetch(`/movies/${id}`, { method: 'DELETE' });
         loadWelcomeTemplate();
     } catch (error) {
-        console.error('Error al eliminar película:', error);
+        console.error('Error deleting movie:', error);
     }
 };
 
@@ -205,7 +202,7 @@ const updateMovie = async (id, name, genre, description) => {
         });
         loadWelcomeTemplate();
     } catch (error) {
-        console.error('Error al actualizar película:', error);
+        console.error('Error updating movie:', error);
     }
 };
 
@@ -217,5 +214,4 @@ const createActionButton = (label, onClick, className) => {
     return button;
 };
 
-// Cargar la plantilla de bienvenida al cargar la página
 window.onload = loadWelcomeTemplate;
